@@ -80,6 +80,7 @@ class UpdateDataController extends Controller
     	/* get posts data from url */
     	foreach ($posts as $post) {
     		$check_if_user_exists = User::find($post['userId']);
+    		/* add post only if user exists */
     		if($check_if_user_exists){
     			$get_post = Post::firstOrNew(['id' =>  $post['id']]);
     			$get_post->user_id = $post['userId'];
