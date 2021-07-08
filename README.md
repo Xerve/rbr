@@ -1,62 +1,37 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+Zadanie rekrutacyjne RBR na stanowisko PHP – Junior Web Developer
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikacja ma za zadanie pobierać dane z dostarczonego API(users, posts) oraz zapisywać je do bazy danych. Pobieranie ma być wykonywane raz dziennie.
+Następnie je wyświetlać te dane w tabeli w widoku oraz wyświetlać najpopularniejszych użytkowników w ciągu ostatnich 7 dni na wykresie.
 
-## About Laravel
+Ważne informacje:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. Pobieranie danych jest wykonywane przy pomocy CURL.
+2. Dane z users rozbiłem na 3 tabele (users, address oraz company), rozdzielenie tych danych wydaje mi się logiczne.
+3. Nigdy nie korzystałem z zadań cron w laravelu (wcześniej jedynie z wykorzystaniem crona na serwerze), więc przy tej części posiłkowałem się dokumentacją.
+4. Wykres danych jest wykonany przy użyciu pluginu: https://apexcharts.com/
+5. Miałem spory problem z wyciągnięciem danych najbardziej aktywnych użytkowników z ostatnich 7 dni. Zrobiłem to trochę naokoło, ale wynik jest prawiwdłowy Wykorzystałem tutaj datę z kolumny created_at. Jeżeli baza w API nie rośnie, czyli nie przybywa nowych rekordów to niestety ale to zawsze będzie tylko jeden dzień(w celu sprawdzenia działania po prostu zmieniałem daty w bazie). Tak to mniej więcej działa:
+    - pobieram wszystkie posty z ostatnich 7 dni
+    - grupuję je według dni dodania
+    - otrzymaną kolekcję mapuje oraz grupuję według user_id
+    - otrzymane kolekcje sortuje po ilości artykułów danego user_id
+    - pierwsza kolekcja z danego dnia od góry jest kolekcją artykułów najpopularniejszego użytkownika
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    Co prawda jest tylko jedno zapytanie do bazy, ale reszta operacji jest po stronie PHP. Przy dużej ilości danych takie rozwiązanie ze względu na użytą pamięć będzie nie zbyt optymalne.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+Plik odpowiedzialny za aktualizację danych z dostarczonego API:
+app/Http/Controllers/UpdateDataController.php
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Pliki odpowiedzialne za cykliczne zadanie CRON:
+app/Console/Commands/UpdateDataCron.php
+app/Console/Kernel.php
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Pliki odpowiedzialne za pobieranie i wyświetlanie danych:
+app/Http/Controllers/PostController.php
+app/Http/Controllers/StatisticController.php
 
-## Laravel Sponsors
+oraz widoki:
+resources/views/chart.blade.php
+resources/views/posts.blade.php
+resources/views/post.blade.php
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
