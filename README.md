@@ -9,7 +9,7 @@ Ważne informacje:
 2. Dane z users rozbiłem na 3 tabele (users, address oraz company), rozdzielenie tych danych wydaje mi się logiczne.
 3. Nigdy nie korzystałem z zadań cron w laravelu (wcześniej jedynie z wykorzystaniem crona na serwerze), więc przy tej części posiłkowałem się dokumentacją.
 4. Wykres danych jest wykonany przy użyciu pluginu: https://apexcharts.com/
-5. Miałem spory problem z wyciągnięciem danych najbardziej aktywnych użytkowników z ostatnich 7 dni. Zrobiłem to trochę naokoło, ale wynik jest prawiwdłowy Wykorzystałem tutaj datę z kolumny created_at. Jeżeli baza w API nie rośnie, czyli nie przybywa nowych rekordów to niestety ale to zawsze będzie tylko jeden dzień(w celu sprawdzenia działania po prostu zmieniałem daty w bazie). Tak to mniej więcej działa:
+5. Miałem spory problem z wyciągnięciem danych najbardziej aktywnych użytkowników z ostatnich 7 dni. Zrobiłem to trochę na około, ale wynik jest prawidłowy. Wykorzystałem tutaj datę z kolumny created_at. Jeżeli baza w API nie rośnie, czyli nie przybywa nowych rekordów to niestety ale to zawsze będzie tylko jeden dzień(w celu sprawdzenia działania po prostu zmieniałem daty w bazie). Tak to mniej więcej działa:
     - pobieram wszystkie posty z ostatnich 7 dni
     - grupuję je według dni dodania
     - otrzymaną kolekcję mapuje oraz grupuję według user_id
